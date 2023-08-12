@@ -33,8 +33,7 @@ int main()
 
         int index = 0;
         for (const auto& line : lines) {
-            index++;
-            if (line == "5" && index != 1) {
+            if (line == "5" && index != 0) {
                 auto itQuestion = std::next(lines.begin(), index - 1);
                 auto itOptions = std::next(lines.begin(), index + 1);
                 auto itAnswer = std::next(lines.begin(), index + 2);
@@ -44,6 +43,7 @@ int main()
                 Question questionItem(question, options, answer);
                 questions.push_back(questionItem);
             }
+            index++;
         }
     }
     else {
