@@ -1,0 +1,21 @@
+5
+1 Which number should come next in the series? 1-1-2-3-5-8-13
+5
+8 13 21	26 31
+c
+2 Which one is the best answer? PEACH is to HCAEP as 46251 is to:
+5
+25641 26451 12654 51462 15264
+e
+3 Choose the number that is 1/4 of 1/2 of 1/5 of 200:
+5
+2 5 10 25 50
+b
+4 Which one of the numbers does not belong in the following series? 2-3-6-7-8-14-15-30
+5
+Three Seven Eight Fifteen Thirty
+c
+5 Ralph likes 25 but not 24; he likes 400 but not 300; he likes 144 but not 145. Which does he like:
+5
+10 50 124 200 1600
+e

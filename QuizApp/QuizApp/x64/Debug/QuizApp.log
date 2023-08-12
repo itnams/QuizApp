@@ -1,0 +1,4 @@
+﻿  QuizApp.cpp
+D:\code\QuizApp\QuizApp\QuizApp\QuizApp.cpp(50,22): warning C4566: character represented by universal-character-name '\u1EC3' cannot be represented in the current code page (1252)
+D:\code\QuizApp\QuizApp\QuizApp\QuizApp.cpp(50,22): warning C4566: character represented by universal-character-name '\u1EDF' cannot be represented in the current code page (1252)
+LINK : fatal error LNK1168: cannot open D:\code\QuizApp\QuizApp\x64\Debug\QuizApp.exe for writing
