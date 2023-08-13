@@ -4,11 +4,12 @@
 #include <list>
 #include "Question.cpp"
 #include <sstream>
+using namespace std;
 
-std::vector<std::string> stringToVector(const std::string& str) {
-    std::vector<std::string> vec;
-    std::istringstream iss(str);
-    std::string word;
+vector<string> stringToVector(const string& str) {
+    vector<string> vec;
+    istringstream iss(str);
+    string word;
 
     while (iss >> word) {
         vec.push_back(word);
@@ -18,14 +19,15 @@ std::vector<std::string> stringToVector(const std::string& str) {
 }
 int main()
 {
-    std::list<Question> questions;
-    std::ifstream file("files/input.txt"); // Đường dẫn đến file txt
+    list<Question> questions;
+    ifstream file("files/input.txt"); // Đường dẫn đến file txt
+    list<char> answers;
 
     if (file.is_open()) {
-        std::string line;
-        std::list<std::string> lines; // Danh sách dòng
+        string line;
+        list<string> lines; // Danh sách dòng
 
-        while (std::getline(file, line)) {
+        while (getline(file, line)) {
             lines.push_back(line); // Thêm dòng vào danh sách
         }
 
@@ -34,12 +36,12 @@ int main()
         int index = 0;
         for (const auto& line : lines) {
             if (line == "5" && index != 0) {
-                auto itQuestion = std::next(lines.begin(), index - 1);
-                auto itOptions = std::next(lines.begin(), index + 1);
-                auto itAnswer = std::next(lines.begin(), index + 2);
-                std::string question = *itQuestion;
-                std::vector<std::string> options = stringToVector(*itOptions);
-                std::string answer = *itAnswer;
+                auto itQuestion = next(lines.begin(), index - 1);
+                auto itOptions = next(lines.begin(), index + 1);
+                auto itAnswer = next(lines.begin(), index + 2);
+                string question = *itQuestion;
+                vector<string> options = stringToVector(*itOptions);
+                string answer = *itAnswer;
                 Question questionItem(question, options, answer);
                 questions.push_back(questionItem);
             }
@@ -47,8 +49,24 @@ int main()
         }
     }
     else {
-        std::cout << "Không thể mở file." << std::endl;
+        cout << "Không thể mở file." << endl;
     }
-
-    std::cout << "Hello World!\n";
+    for (const auto& question: questions) {
+        char answer;
+        question.display();
+        bool validAnswer = false;
+        while (!validAnswer) {
+            cout << "Enter answer or enter 0 to skip" << endl;
+            cin >> answer;
+            if (answer - 'a' < question.getOptions().size()) {
+                validAnswer = true;
+            }
+            else {
+                cout << "Cau tra loi khong hop le! Vui long nhap lai." << endl;
+            }
+        }
+        if (answer != '0') {
+            answers.push_back(answer);
+        }
+    }
 }
