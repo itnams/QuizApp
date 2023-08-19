@@ -2,8 +2,12 @@
 #include <fstream>
 #include <string>
 #include <list>
-#include "Question.cpp"
+#include <cctype>
 #include <sstream>
+#include <iterator>
+#include "Question.cpp"
+#include "Student.cpp"
+#include <algorithm>
 using namespace std;
 
 vector<string> stringToVector(const string& str) {
@@ -17,18 +21,17 @@ vector<string> stringToVector(const string& str) {
 
     return vec;
 }
-int main()
-{
+
+list<Question> loadingFile() {
     list<Question> questions;
-    ifstream file("files/input.txt"); // Đường dẫn đến file txt
-    list<char> answers;
+    ifstream file("files/input.txt");
 
     if (file.is_open()) {
         string line;
-        list<string> lines; // Danh sách dòng
+        list<string> lines;
 
         while (getline(file, line)) {
-            lines.push_back(line); // Thêm dòng vào danh sách
+            lines.push_back(line);
         }
 
         file.close();
@@ -49,24 +52,153 @@ int main()
         }
     }
     else {
-        cout << "Không thể mở file." << endl;
+        cout << "Unable to open file." << endl;
     }
-    for (const auto& question: questions) {
+    return questions;
+}
+
+Student inputStudent() {
+    string fullName;
+    string studentCode;
+    bool validFullName = false;
+    bool validStudentCode = false;
+    while (!validFullName) {
+        cout << "Full Name:" << endl;
+        getline(cin, fullName);
+        if (fullName.size() > 0) {
+            validFullName = true;
+        } else {
+            cout << "Please join again." << endl;
+        }
+    }
+    while (!validStudentCode) {
+        cout << "Student Code:" << endl;
+        cin >> studentCode;
+        if (studentCode.size() > 7) {
+            validStudentCode = true;
+        }
+        else {
+            cout << "Please join again." << endl;
+        }
+    }
+    Student student(fullName, studentCode);
+    return student;
+}
+
+list<char> showQuestion(list<Question> questions) {
+    list<char> answers;
+    cout << "Total questions: " << questions.size() << endl;
+    cout << "Time: " << questions.size() << " minutes" << endl;
+    for (const auto& question : questions) {
         char answer;
         question.display();
         bool validAnswer = false;
         while (!validAnswer) {
             cout << "Enter answer or enter 0 to skip" << endl;
             cin >> answer;
-            if (answer - 'a' < question.getOptions().size()) {
+            if (tolower(answer) - 'a' < question.getOptions().size()) {
                 validAnswer = true;
             }
+            else if (answer == '0') {
+                validAnswer = true;
+                answers.push_back(' ');
+            }
             else {
-                cout << "Cau tra loi khong hop le! Vui long nhap lai." << endl;
+                cout << "Please join again." << endl;
             }
         }
         if (answer != '0') {
-            answers.push_back(answer);
+            answers.push_back(tolower(answer));
         }
     }
+    return answers;
+}
+
+void previewSnswer(list<char> answers) {
+    int i = 0;
+    cout << "Preview" << endl;
+    for (const auto& answer : answers) {
+        i++;
+        cout << i << ". " << answer << endl;
+    }
+}
+
+void editAnswers(Student student, list<Question> questions, list<char> answers) {
+    string selected;
+    bool validSelected = false;
+    list<char> answersEdited = answers;
+    while (!validSelected) {
+        cout << "Please select a question to edit, or enter OK to submit." << endl;
+        cin >> selected;
+        transform(selected.begin(), selected.end(), selected.begin(), [](unsigned char c) {
+            return std::tolower(c);
+        });
+        if (selected == "ok") {
+            int i = 0;
+            int rightAnswer = 0;
+            for (const auto& question : questions) {
+                auto itAnswers = answers.begin();
+                advance(itAnswers, i);
+                char answer = *itAnswers;
+                if (question.getAnswer().front() == (answer)) {
+                    rightAnswer++;
+                }
+                i++;
+            }
+            student.getStudent();
+            cout << "Result:" << rightAnswer << "/" << questions.size() << endl;
+            cout << "Scores:" << 10/questions.size()*rightAnswer << endl;
+            validSelected = true;
+        }
+        else {
+            int num;
+            try {
+                num = stoi(selected) - 1;
+                if (num >= questions.size()) {
+                    cout << "Please join again." << std::endl;
+                }
+                else {
+                    if (num >= 0 && num < questions.size()) {
+                        list<Question>::iterator it = questions.begin();
+                        advance(it, num);
+                        Question element = *it;
+                        element.display();
+                        bool validAnswer = false;
+                        while (!validAnswer) {
+                            char answer;
+                            cout << "Please selected aswe" << endl;
+                            cin >> answer;
+                            if (tolower(answer) - 'a' < element.getOptions().size()) {
+                                auto it = answersEdited.begin();
+                                std::advance(it, num);
+                                *it = tolower(answer);
+                                validAnswer = true;
+                            } else {
+                                cout << "Please join again." << endl;
+                            }
+                        }
+                    }
+                    previewSnswer(answersEdited);
+                    editAnswers(student, questions, answersEdited);
+                    validSelected = true;
+                }
+            }
+            catch (const std::exception& e) {
+                cout << "Please join again." << std::endl;
+                validSelected = false;
+            }
+        }
+    }
+}
+
+int main()
+{
+    list<Question> questions;
+    list<char> answers;
+    Student student;
+    student = inputStudent();
+    questions = loadingFile();
+    answers = showQuestion(questions);
+    previewSnswer(answers);
+    editAnswers(student, questions, answers);
 }
