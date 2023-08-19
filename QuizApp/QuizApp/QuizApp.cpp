@@ -39,14 +39,16 @@ list<Question> loadingFile() {
         int index = 0;
         for (const auto& line : lines) {
             if (line == "5" && index != 0) {
-                auto itQuestion = next(lines.begin(), index - 1);
-                auto itOptions = next(lines.begin(), index + 1);
-                auto itAnswer = next(lines.begin(), index + 2);
-                string question = *itQuestion;
-                vector<string> options = stringToVector(*itOptions);
-                string answer = *itAnswer;
-                Question questionItem(question, options, answer);
-                questions.push_back(questionItem);
+                if(index + 1 < lines.size() && index + 2 < lines.size()) {
+                    auto itQuestion = next(lines.begin(), index - 1);
+                    auto itOptions = next(lines.begin(), index + 1);
+                    auto itAnswer = next(lines.begin(), index + 2);
+                    string question = *itQuestion;
+                    vector<string> options = stringToVector(*itOptions);
+                    string answer = *itAnswer;
+                    Question questionItem(question, options, answer);
+                    questions.push_back(questionItem);
+                }
             }
             index++;
         }
