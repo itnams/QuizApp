@@ -125,15 +125,14 @@ void previewSnswer(list<char> answers) {
     }
 }
 
-void editAnswers(Student student, list<Question> questions, list<char> answers) {
+void editAnswers(Student student, list<Question> questions, list<char> &answers) {
     string selected;
     bool validSelected = false;
-    list<char> answersEdited = answers;
     while (!validSelected) {
         cout << "Please select a question to edit, or enter OK to submit." << endl;
         cin >> selected;
         transform(selected.begin(), selected.end(), selected.begin(), [](unsigned char c) {
-            return std::tolower(c);
+            return tolower(c);
         });
         if (selected == "ok") {
             int i = 0;
@@ -157,7 +156,7 @@ void editAnswers(Student student, list<Question> questions, list<char> answers) 
             try {
                 num = stoi(selected) - 1;
                 if (num >= questions.size()) {
-                    cout << "Please join again." << std::endl;
+                    cout << "Please join again." << endl;
                 }
                 else {
                     if (num >= 0 && num < questions.size()) {
@@ -171,8 +170,8 @@ void editAnswers(Student student, list<Question> questions, list<char> answers) 
                             cout << "Please selected aswe" << endl;
                             cin >> answer;
                             if (tolower(answer) - 'a' < element.getOptions().size()) {
-                                auto it = answersEdited.begin();
-                                std::advance(it, num);
+                                auto it = answers.begin();
+                                advance(it, num);
                                 *it = tolower(answer);
                                 validAnswer = true;
                             } else {
@@ -180,13 +179,13 @@ void editAnswers(Student student, list<Question> questions, list<char> answers) 
                             }
                         }
                     }
-                    previewSnswer(answersEdited);
-                    editAnswers(student, questions, answersEdited);
+                    previewSnswer(answers);
+                    editAnswers(student, questions, answers);
                     validSelected = true;
                 }
             }
-            catch (const std::exception& e) {
-                cout << "Please join again." << std::endl;
+            catch (const exception& e) {
+                cout << "Please join again." << endl;
                 validSelected = false;
             }
         }
